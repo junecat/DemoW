@@ -1,0 +1,10 @@
+#Dockerfile for RUN container for DemoW 
+FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine
+RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib tzdata
+ENV TZ=Europe/Moscow
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+COPY publish-output/* /App/
+WORKDIR /App
+#STOPSIGNAL SIGQUIT
+ENTRYPOINT ["./DemoW"]

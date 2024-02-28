@@ -1,0 +1,66 @@
+﻿@page "/weather"
+@inject HttpClient Http
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Заказы по дням</h1>
+
+<p>Демонстрируется запрос заказов с группировкой по дням</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Кол-во заказов</th>
+                <th>Сумма цены заказов</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var orderByDay in orderByDays)
+            {
+                <tr>
+                    <td>@orderByDay.Date.ToShortDateString()</td>
+                    <td>@orderByDay.Count</td>
+                    <td>@orderByDay.Price</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private WeatherForecast[]? forecasts;
+    private OrderByDays[] orderByDays;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        orderByDays= await Http.GetFromJsonAsync<OrderByDays[]>("sample-data/orders.json");
+        var tmp = orderByDays.Length;
+    }
+
+    public class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public string? Summary { get; set; }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+
+    public class OrderByDays
+    {
+        public DateOnly Date { get; set; }
+        public int Count { get; set; }
+        public Double Price { get; set; }
+    }
+
+}
