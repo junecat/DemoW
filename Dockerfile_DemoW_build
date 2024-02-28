@@ -1,8 +1,8 @@
 #Dockerfile for build container for DemoW 
 FROM mcr.microsoft.com/dotnet/sdk:8.0
-COPY ./DemoW /App/DemoW
+COPY . /App/DemoW
 WORKDIR /App/DemoW
 RUN dotnet publish --runtime linux-musl-x64 --self-contained true -c release
 CMD mkdir /App/publish-output/
-#STOPSIGNAL SIGQUIT
-CMD cp -r /App/DemoW/bin/Release/net7.0/linux-musl-x64/publish/* /App/publish-output
+STOPSIGNAL SIGQUIT
+CMD cp -r /App/DemoW/bin/Release/net8.0/linux-musl-x64/publish/* /App/publish-output
